@@ -20,10 +20,5 @@
       "src": "/(.*)",
       "dest": "apps/frontend/dist/$1"
     }
-  ],
-  "functions": {
-    "apps/backend/**/*.go": {
-      "maxDuration": 10
-    }
-  }
+  ]
 }
