@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { apiService, Account, AccountRefreshResponse } from '../services/api';
+import { apiService, Account, /* AccountRefreshResponse */} from '../services/api';
 
 export function AccountsPage() {
   const [accounts, setAccounts] = useState<Account[]>([]);
