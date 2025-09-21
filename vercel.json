@@ -7,18 +7,46 @@
       "config": { "distDir": "dist" }
     },
     {
-      "src": "apps/backend/**/*.go",
+      "src": "api/**/*.go",
       "use": "@vercel/go"
     }
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "apps/backend/$1"
+      "src": "/health",
+      "dest": "/api/health"
+    },
+    {
+      "src": "/api/accounts",
+      "dest": "/api/accounts"
+    },
+    {
+      "src": "/api/accounts/([^/]+)",
+      "dest": "/api/accounts?id=$1"
+    },
+    {
+      "src": "/api/accounts/([^/]+)/refresh",
+      "dest": "/api/accounts/refresh?id=$1"
+    },
+    {
+      "src": "/api/accounts/([^/]+)/transactions",
+      "dest": "/api/accounts/transactions?id=$1"
+    },
+    {
+      "src": "/api/transactions",
+      "dest": "/api/transactions"
+    },
+    {
+      "src": "/api/transactions/([^/]+)",
+      "dest": "/api/transactions?id=$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "apps/frontend/dist/$1"
+      "dest": "/index.html"
     }
   ]
 }
