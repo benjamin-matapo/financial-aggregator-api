@@ -4,27 +4,25 @@
     {
       "src": "apps/frontend/package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "config": { "distDir": "dist" }
     },
     {
-      "src": "apps/backend/main.go",
+      "src": "apps/backend/**/*.go",
       "use": "@vercel/go"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/apps/backend/main.go"
+      "dest": "apps/backend/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/apps/frontend/$1"
+      "dest": "apps/frontend/dist/$1"
     }
   ],
   "functions": {
-    "apps/backend/main.go": {
+    "apps/backend/**/*.go": {
       "maxDuration": 10
     }
   }
