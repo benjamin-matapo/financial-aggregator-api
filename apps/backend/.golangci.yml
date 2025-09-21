@@ -1,0 +1,44 @@
+linters-settings:
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: financial-aggregator-api/backend
+  gocyclo:
+    min-complexity: 15
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  misspell:
+    locale: US
+  lll:
+    line-length: 140
+
+linters:
+  enable:
+    - gofmt
+    - goimports
+    - govet
+    - errcheck
+    - staticcheck
+    - unused
+    - gosimple
+    - ineffassign
+    - typecheck
+    - misspell
+    - gosec
+    - goconst
+    - gocyclo
+    - dupl
+    - lll
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - gomnd
+        - gocyclo
+        - dupl

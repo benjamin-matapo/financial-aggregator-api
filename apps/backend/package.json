@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Go backend API for financial aggregator with chi router",
+  "private": true,
+  "scripts": {
+    "dev": "make dev",
+    "build": "make build",
+    "lint": "make lint",
+    "type-check": "make vet",
+    "clean": "make clean",
+    "test": "make test",
+    "test-coverage": "make test-coverage",
+    "setup": "make setup"
+  },
+  "engines": {
+    "go": ">=1.21.0"
+  }
+}

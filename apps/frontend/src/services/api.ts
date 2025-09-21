@@ -1,0 +1,149 @@
+import axios from 'axios';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor
+api.interceptors.request.use(
+  (config) => {
+    console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
+
+export interface Account {
+  id: string;
+  name: string;
+  bank: string;
+  account_type: string;
+  balance: number;
+  currency: string;
+  last_updated: string;
+  is_active: boolean;
+}
+
+export interface Transaction {
+  id: string;
+  account_id: string;
+  amount: number;
+  currency: string;
+  type: 'debit' | 'credit' | 'transfer';
+  category: string;
+  description: string;
+  date: string;
+  status: string;
+  reference?: string;
+}
+
+export interface AccountRefreshResponse {
+  account_id: string;
+  success: boolean;
+  message: string;
+  last_updated: string;
+  new_balance?: number;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+  error?: string;
+}
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data: T[];
+  meta: {
+    total: number;
+    limit: number;
+    offset: number;
+    pages: number;
+  };
+}
+
+// API functions
+export const apiService = {
+  // Health check
+  async checkHealth(): Promise<{ status: string; timestamp: string }> {
+    const response = await api.get('/health');
+    return response.data;
+  },
+
+  // Accounts
+  async getAccounts(): Promise<Account[]> {
+    const response = await api.get<ApiResponse<Account[]>>('/api/accounts');
+    return response.data.data || [];
+  },
+
+  async getAccount(id: string): Promise<Account> {
+    const response = await api.get<ApiResponse<Account>>(`/api/accounts/${id}`);
+    if (!response.data.success || !response.data.data) {
+      throw new Error(response.data.message || 'Account not found');
+    }
+    return response.data.data;
+  },
+
+  async refreshAccount(id: string): Promise<AccountRefreshResponse> {
+    const response = await api.post<ApiResponse<AccountRefreshResponse>>(`/api/accounts/${id}/refresh`);
+    if (!response.data.success || !response.data.data) {
+      throw new Error(response.data.message || 'Failed to refresh account');
+    }
+    return response.data.data;
+  },
+
+  // Transactions
+  async getTransactions(params?: {
+    account_id?: string;
+    type?: string;
+    category?: string;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ transactions: Transaction[]; meta: any }> {
+    const response = await api.get<PaginatedResponse<Transaction>>('/api/transactions', { params });
+    return {
+      transactions: response.data.data || [],
+      meta: response.data.meta || { total: 0, limit: 50, offset: 0, pages: 0 }
+    };
+  },
+
+  async getTransaction(id: string): Promise<Transaction> {
+    const response = await api.get<ApiResponse<Transaction>>(`/api/transactions/${id}`);
+    if (!response.data.success || !response.data.data) {
+      throw new Error(response.data.message || 'Transaction not found');
+    }
+    return response.data.data;
+  },
+
+  async getAccountTransactions(accountId: string, limit = 50): Promise<Transaction[]> {
+    const response = await api.get<ApiResponse<Transaction[]>>(`/api/accounts/${accountId}/transactions`, {
+      params: { limit }
+    });
+    return response.data.data || [];
+  },
+};
+
+export default apiService;
