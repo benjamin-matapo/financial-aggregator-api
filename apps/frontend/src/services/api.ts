@@ -1,6 +1,10 @@
 import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+// Log which base URL is used (empty string means same-origin)
+// This helps diagnose production issues (e.g., wrong Vercel project root)
+// eslint-disable-next-line no-console
+console.log('[api] Using baseURL =', API_BASE_URL || '(same-origin)');
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -17,6 +21,8 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    // eslint-disable-next-line no-console
+    console.error('[api] Request error:', error?.message || error);
     return Promise.reject(error);
   }
 );
@@ -27,7 +33,8 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('API Error:', error.response?.data || error.message);
+    // eslint-disable-next-line no-console
+    console.error('[api] Response error:', error.response?.data || error.message);
     return Promise.reject(error);
   }
 );
