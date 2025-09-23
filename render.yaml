@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: financial-aggregator-backend
+    env: go
+    buildCommand: go build -o main ./apps/backend
+    startCommand: ./main
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars: []
+
+  - type: static
+    name: financial-aggregator-frontend
+    buildCommand: |
+      npm install -g pnpm
+      pnpm install
+      pnpm --filter frontend build
+    staticPublishPath: apps/frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://financial-aggregator-backend.onrender.com
+        # Replace with your actual backend URL after the backend service is created
