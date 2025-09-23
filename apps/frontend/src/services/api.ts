@@ -2,7 +2,11 @@ import axios from 'axios';
 
 // Use Vite env for base URL in production (Render or Vercel)
 // Set VITE_API_URL to your backend base URL (e.g., https://your-backend.onrender.com)
-const API_BASE_URL = (import.meta as any)?.env?.VITE_API_URL || '';
+let API_BASE_URL: string = (import.meta as any)?.env?.VITE_API_URL || '';
+// Fallback to localhost in dev if not provided
+if (!API_BASE_URL && typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+  API_BASE_URL = 'http://localhost:8080';
+}
 // Log which base URL is used (empty string means same-origin)
 // This helps diagnose production issues (e.g., wrong Vercel project root)
 // eslint-disable-next-line no-console
