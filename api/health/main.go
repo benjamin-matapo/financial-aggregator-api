@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
 
 // Handler is the Vercel serverless function for health check
 func Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[health]", r.Method, r.URL.String())
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

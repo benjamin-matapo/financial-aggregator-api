@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -49,6 +50,7 @@ var mockTransactions = []Transaction{
 
 // Handler serves GET /api/transactions and GET /api/transactions?id=txn_1
 func Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[transactions]", r.Method, r.URL.String())
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

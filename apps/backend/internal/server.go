@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,21 +46,27 @@ func NewServer() *Server {
 	router.Use(middleware.Timeout(60 * time.Second))
 
 	// CORS configuration
+	// CORS: allow all origins for simplicity on Render/preview
+	// TODO: In production, restrict to your frontend origin(s)
 	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "https://*.vercel.app"},
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
-		AllowCredentials: true,
+		AllowCredentials: false,
 		MaxAge:           300,
 	})
 	router.Use(corsConfig.Handler)
 
 	// Health check endpoint
 	router.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("[health] %s %s", r.Method, r.URL.String())
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, `{"status":"healthy","timestamp":"%s"}`, time.Now().Format(time.RFC3339))
+		_ = json.NewEncoder(w).Encode(map[string]string{
+			"status":    "healthy",
+			"timestamp": time.Now().Format(time.RFC3339),
+		})
 	})
 
 	// API routes

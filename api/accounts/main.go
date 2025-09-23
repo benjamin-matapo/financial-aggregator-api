@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 )
@@ -59,6 +60,7 @@ var mockAccounts = []Account{
 
 // Handler serves GET /api/accounts and GET /api/accounts?id=acc_1
 func Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("[accounts]", r.Method, r.URL.String())
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")

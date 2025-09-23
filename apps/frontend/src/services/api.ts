@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+// Use Vite env for base URL in production (Render or Vercel)
+// Set VITE_API_URL to your backend base URL (e.g., https://your-backend.onrender.com)
+const API_BASE_URL = (import.meta as any)?.env?.VITE_API_URL || '';
 // Log which base URL is used (empty string means same-origin)
 // This helps diagnose production issues (e.g., wrong Vercel project root)
 // eslint-disable-next-line no-console
@@ -17,7 +19,7 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+    console.log(`[api] ${config.method?.toUpperCase()} ${config.baseURL || '(same-origin)'}${config.url}`);
     return config;
   },
   (error) => {
