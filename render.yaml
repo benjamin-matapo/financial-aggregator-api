@@ -9,13 +9,13 @@ services:
     healthCheckPath: /health
     envVars: []
 
-  - type: static_site
+  - type: static
     name: financial-aggregator-frontend
     buildCommand: |
       npm install -g pnpm
       pnpm install
       pnpm --filter frontend build
-    publishPath: apps/frontend/dist
+    staticPublishPath: apps/frontend/dist
     envVars:
       - key: VITE_API_URL
         value: https://financial-aggregator-backend.onrender.com
